@@ -1,7 +1,7 @@
 <?php
 
-use Devimteam\Component\RpcServer\ResponseBuilder;
-use Devimteam\Component\RpcServer\Exception\RpcParseException;
+use Devim\Component\RpcServer\ResponseBuilder;
+use Devim\Component\RpcServer\Exception\RpcParseException;
 
 /**
  * Class ResponseBuilderTest

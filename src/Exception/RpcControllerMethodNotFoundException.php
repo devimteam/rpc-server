@@ -1,6 +1,6 @@
 <?php
 
-namespace Devimteam\Component\RpcServer\Exception;
+namespace Devim\Component\RpcServer\Exception;
 
 /**
  * Class RpcControllerMethodNotFoundException.

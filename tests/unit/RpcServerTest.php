@@ -1,6 +1,6 @@
 <?php
 
-use Devimteam\Component\RpcServer\RpcServer;
+use Devim\Component\RpcServer\RpcServer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 

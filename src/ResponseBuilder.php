@@ -1,8 +1,8 @@
 <?php
 
-namespace Devimteam\Component\RpcServer;
+namespace Devim\Component\RpcServer;
 
-use Devimteam\Component\RpcServer\Exception\RpcException;
+use Devim\Component\RpcServer\Exception\RpcException;
 
 /**
  * Class ResponseBuilder

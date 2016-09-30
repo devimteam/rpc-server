@@ -1,6 +1,6 @@
 <?php
 
-namespace Devimteam\Component\RpcServer;
+namespace Devim\Component\RpcServer;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;

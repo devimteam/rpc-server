@@ -1,13 +1,13 @@
 <?php
 
-namespace Devimteam\Component\RpcServer;
+namespace Devim\Component\RpcServer;
 
-use Devimteam\Component\RpcServer\Exception\RpcInvalidParamsException;
-use Devimteam\Component\RpcServer\Exception\RpcInvalidRequestException;
-use Devimteam\Component\RpcServer\Exception\RpcMethodNotFoundException;
-use Devimteam\Component\RpcServer\Exception\RpcParseException;
-use Devimteam\Component\RpcServer\Exception\RpcServiceExistsException;
-use Devimteam\Component\RpcServer\Exception\RpcServiceNotFoundException;
+use Devim\Component\RpcServer\Exception\RpcInvalidParamsException;
+use Devim\Component\RpcServer\Exception\RpcInvalidRequestException;
+use Devim\Component\RpcServer\Exception\RpcMethodNotFoundException;
+use Devim\Component\RpcServer\Exception\RpcParseException;
+use Devim\Component\RpcServer\Exception\RpcServiceExistsException;
+use Devim\Component\RpcServer\Exception\RpcServiceNotFoundException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -147,11 +147,11 @@ class RpcServer
      *
      * @return array
      *
-     * @throws \Devimteam\Component\RpcServer\Exception\RpcServiceNotFoundException
-     * @throws \Devimteam\Component\RpcServer\Exception\RpcParseException
-     * @throws \Devimteam\Component\RpcServer\Exception\RpcMethodNotFoundException
-     * @throws \Devimteam\Component\RpcServer\Exception\RpcInvalidRequestException
-     * @throws \Devimteam\Component\RpcServer\Exception\RpcInvalidParamsException
+     * @throws \Devim\Component\RpcServer\Exception\RpcServiceNotFoundException
+     * @throws \Devim\Component\RpcServer\Exception\RpcParseException
+     * @throws \Devim\Component\RpcServer\Exception\RpcMethodNotFoundException
+     * @throws \Devim\Component\RpcServer\Exception\RpcInvalidRequestException
+     * @throws \Devim\Component\RpcServer\Exception\RpcInvalidParamsException
      */
     private function parseBatchRequest(array $payloads) : array
     {
@@ -169,11 +169,11 @@ class RpcServer
      *
      * @return mixed
      *
-     * @throws \Devimteam\Component\RpcServer\Exception\RpcParseException
-     * @throws \Devimteam\Component\RpcServer\Exception\RpcServiceNotFoundException
-     * @throws \Devimteam\Component\RpcServer\Exception\RpcInvalidParamsException
-     * @throws \Devimteam\Component\RpcServer\Exception\RpcMethodNotFoundException
-     * @throws \Devimteam\Component\RpcServer\Exception\RpcInvalidRequestException
+     * @throws \Devim\Component\RpcServer\Exception\RpcParseException
+     * @throws \Devim\Component\RpcServer\Exception\RpcServiceNotFoundException
+     * @throws \Devim\Component\RpcServer\Exception\RpcInvalidParamsException
+     * @throws \Devim\Component\RpcServer\Exception\RpcMethodNotFoundException
+     * @throws \Devim\Component\RpcServer\Exception\RpcInvalidRequestException
      */
     private function parseRequest(array $payload)
     {
@@ -244,7 +244,7 @@ class RpcServer
      *
      * @return array
      *
-     * @throws \Devimteam\Component\RpcServer\Exception\RpcInvalidParamsException
+     * @throws \Devim\Component\RpcServer\Exception\RpcInvalidParamsException
      */
     private function extractParametersValue($service, string $method, array $params) : array
     {
@@ -282,7 +282,7 @@ class RpcServer
      *
      * @return mixed
      *
-     * @throws \Devimteam\Component\RpcServer\Exception\RpcInvalidParamsException
+     * @throws \Devim\Component\RpcServer\Exception\RpcInvalidParamsException
      */
     private function invokeMethod($service, string $method, array $params)
     {

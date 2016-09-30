@@ -1,6 +1,6 @@
 <?php
 
-namespace Devimteam\Component\RpcServer;
+namespace Devim\Component\RpcServer;
 
 /**
  * Interface MiddlewareInterface
