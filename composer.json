@@ -9,7 +9,7 @@
     "require": {
         "php": ">=7",
         "symfony/http-foundation": "^3.1",
-        "doctrine/orm": "~2.5.4"
+        "doctrine/orm": "dev-master"
     },
     "require-dev": {
         "codeception/codeception": "*"
