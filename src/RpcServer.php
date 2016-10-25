@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class Component\RpcServer
+ * Class RpcServer
  */
 class RpcServer
 {
@@ -34,12 +34,11 @@ class RpcServer
     private $middleware = [];
 
     /**
-     * @param string $name
-     * @param \Closure $callback
+     * @param string $className
+     * @param \Closure $parametersCallback
      *
      * @return $this
-     *
-     * @throws RpcServiceExistsException
+     * @throws \Devim\Component\RpcServer\Exception\RpcServiceExistsException
      */
     public function addService(string $className, \Closure $parametersCallback)
     {
@@ -75,38 +74,57 @@ class RpcServer
      * @param Request $request
      *
      * @return JsonResponse
+     *
+     * @throws \Devim\Component\RpcServer\Exception\RpcServiceNotFoundException
+     * @throws \Devim\Component\RpcServer\Exception\RpcParseException
+     * @throws \Devim\Component\RpcServer\Exception\RpcMethodNotFoundException
+     * @throws \Devim\Component\RpcServer\Exception\RpcInvalidRequestException
+     * @throws \Devim\Component\RpcServer\Exception\RpcInvalidParamsException
+     * @throws \LogicException
      */
     public function run(Request $request) : JsonResponse
     {
+        $response = [];
+
         $payload = json_decode($request->getContent(), true);
 
-        return JsonResponse::create($this->doRun($payload));
+        if ($this->isBatchRequest($payload)) {
+            foreach ($payload as $item) {
+                $response[] = $this->doRun($item);
+            }
+            if (count($response) === 1) {
+                $response = reset($response);
+            }
+        } else {
+            $response = $this->doRun($payload);
+        }
+
+        return JsonResponse::create($response);
     }
 
     /**
      * @param mixed $payload
      *
      * @return mixed
+     *
+     * @throws \Devim\Component\RpcServer\Exception\RpcServiceNotFoundException
+     * @throws \Devim\Component\RpcServer\Exception\RpcParseException
+     * @throws \Devim\Component\RpcServer\Exception\RpcMethodNotFoundException
+     * @throws \Devim\Component\RpcServer\Exception\RpcInvalidParamsException
+     * @throws \Devim\Component\RpcServer\Exception\RpcInvalidRequestException
      */
     private function doRun($payload)
     {
         try {
             $this->validatePayload($payload);
-
-            if ($this->isBatchRequest($payload)) {
-                return $this->parseBatchRequest($payload);
-            }
-
-            return $this->parseRequest($payload);
-
         } catch (\Throwable $e) {
-            if ($e instanceof RpcInvalidRequestException || $e instanceof RpcParseException) {
-                return $this->handleExceptions(null, $e);
-            }
+            return $this->handleExceptions($payload, $e);
+        }
 
-            if (!$this->isNotification($payload)) {
-                return $this->handleExceptions($payload['id'], $e);
-            }
+        try {
+            return $this->parseRequest($payload);
+        } catch (\Throwable $e) {
+            return $this->handleExceptions($payload, $e);
         }
     }
 
@@ -116,9 +134,9 @@ class RpcServer
      * @throws RpcInvalidRequestException
      * @throws RpcParseException
      */
-    private function validatePayload($payload)
+    private function validatePayload(&$payload)
     {
-        if (!is_array($payload)) {
+        if (null === $payload) {
             throw new RpcParseException();
         }
 
@@ -133,35 +151,13 @@ class RpcServer
     }
 
     /**
-     * @param array $payload
+     * @param mixed $payload
      *
      * @return bool
      */
-    private function isBatchRequest(array $payload) : bool
+    private function isBatchRequest($payload) : bool
     {
-        return array_keys($payload) === range(0, count($payload) - 1);
-    }
-
-    /**
-     * @param array $payloads
-     *
-     * @return array
-     *
-     * @throws \Devim\Component\RpcServer\Exception\RpcServiceNotFoundException
-     * @throws \Devim\Component\RpcServer\Exception\RpcParseException
-     * @throws \Devim\Component\RpcServer\Exception\RpcMethodNotFoundException
-     * @throws \Devim\Component\RpcServer\Exception\RpcInvalidRequestException
-     * @throws \Devim\Component\RpcServer\Exception\RpcInvalidParamsException
-     */
-    private function parseBatchRequest(array $payloads) : array
-    {
-        $results = [];
-
-        foreach ($payloads as $payload) {
-            $results[] = $this->parseRequest($payload);
-        }
-
-        return array_filter($results);
+        return is_array($payload) && array_keys($payload) === range(0, count($payload) - 1);
     }
 
     /**
@@ -194,11 +190,7 @@ class RpcServer
 
         $result = $this->invokeMethod($service, $methodName, $params);
 
-        if (!$this->isNotification($payload)) {
-            return ResponseBuilder::build($payload['id'], $result);
-        }
-
-        return '';
+        return ResponseBuilder::build($this->extractRequestId($payload), $result);
     }
 
     /**
@@ -291,19 +283,24 @@ class RpcServer
         return (new \ReflectionMethod($service, $method))->invokeArgs($service, $paramsValue);
     }
 
-    private function isNotification(array $payload)
-    {
-        return !isset($payload['id']);
-    }
-
     /**
-     * @param int|null $id
+     * @param $payload
      * @param \Throwable $exception
      *
      * @return array
      */
-    private function handleExceptions($id, \Throwable $exception) : array
+    private function handleExceptions($payload, \Throwable $exception) : array
     {
-        return ResponseBuilder::build($id, $exception);
+        return ResponseBuilder::build($this->extractRequestId($payload), $exception);
+    }
+
+    /**
+     * @param $payload
+     *
+     * @return null|int
+     */
+    private function extractRequestId($payload)
+    {
+        return $payload['id'] ?? null;
     }
 }
