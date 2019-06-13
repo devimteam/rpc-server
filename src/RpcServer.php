@@ -8,8 +8,10 @@ use Devim\Component\RpcServer\Exception\RpcMethodNotFoundException;
 use Devim\Component\RpcServer\Exception\RpcParseException;
 use Devim\Component\RpcServer\Exception\RpcServiceExistsException;
 use Devim\Component\RpcServer\Exception\RpcServiceNotFoundException;
+use Devim\Component\RpcServer\Smd\SmdGeneratorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\Common\Annotations\Reader as AnnotationReaderInterface;
 
 /**
  * Class RpcServer
@@ -33,6 +35,27 @@ class RpcServer
      */
     private $middleware = [];
 
+    /**
+     * @var AnnotationReaderInterface
+     */
+    private $annotationReader;
+    
+    /**
+     * @var SmdGenerator 
+     */
+    private $smdGenerator;
+    
+    /**
+     * 
+     * @param AnnotationReaderInterface $annotationReader
+     * @param SmdGeneratorInterface $smdGenerator
+     */
+    public function __construct(AnnotationReaderInterface $annotationReader, SmdGeneratorInterface $smdGenerator)
+    {
+        $this->annotationReader = $annotationReader;
+        $this->smdGenerator = $smdGenerator;
+    }
+    
     /**
      * @param string $className
      * @param \Closure $parametersCallback
@@ -86,17 +109,21 @@ class RpcServer
     {
         $response = [];
 
-        $payload = json_decode($request->getContent(), true);
-
-        if ($this->isBatchRequest($payload)) {
-            foreach ($payload as $item) {
-                $response[] = $this->doRun($item);
-            }
-            if (count($response) === 1) {
-                $response = reset($response);
-            }
+        if ($this->isSmdRequest($request)) {
+            $response = $this->smdGenerator->run($this->serviceAnnotationGenerator());
         } else {
-            $response = $this->doRun($payload);
+            $payload = json_decode($request->getContent(), true);
+
+            if ($this->isBatchRequest($payload)) {
+                foreach ($payload as $item) {
+                    $response[] = $this->doRun($item);
+                }
+                if (count($response) === 1) {
+                    $response = reset($response);
+                }
+            } else {
+                $response = $this->doRun($payload);
+            }
         }
 
         return JsonResponse::create($response);
@@ -150,6 +177,15 @@ class RpcServer
         }
     }
 
+    /**
+     * 
+     * @return bool
+     */
+    private function isSmdRequest(Request $request)
+    {
+        return $request->query->has('smd');
+    }
+    
     /**
      * @param mixed $payload
      *
@@ -302,5 +338,21 @@ class RpcServer
     private function extractRequestId($payload)
     {
         return $payload['id'] ?? null;
+    }
+    
+    private function serviceAnnotationGenerator() {
+        foreach ($this->services as $name => [$className, $parametersCallback]) {
+            $class = new \ReflectionClass($className);
+            $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
+
+            foreach ($methods as $method) {
+                $annotation = $this->annotationReader->getMethodAnnotation($method, \Devim\Component\RpcServer\Smd\Annotation\Service::class);
+
+                if (!empty($annotation)) {
+                    $smdName = $name . '.' . $method->getName();
+                    yield $smdName => $annotation;
+                }
+            }
+        }
     }
 }
