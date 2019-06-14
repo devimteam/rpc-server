@@ -23,7 +23,8 @@ class ArrayDefinitionType extends AbstractDefinitionType
     /**
      * @return array
      */
-    public function getSmdInfo(): array {
+    public function getSmdInfo(): array
+    {
         $info = parent::getSmdInfo();
         
         if (in_array($this->type, static::STD_TYPES)) {

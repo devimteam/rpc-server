@@ -53,9 +53,9 @@ class SmdGenerator implements SmdGeneratorInterface
      * 
      * @return array
      */
-    public function run(\Generator $serviceAnnotationGenerator): array {
+    public function run(\Generator $serviceAnnotationGenerator): array
+    {
         $services = [];
-        
         foreach ($serviceAnnotationGenerator as $name => $annotation) {
             $services[$name] = $annotation->getSmdInfo();
         }
