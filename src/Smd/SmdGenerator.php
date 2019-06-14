@@ -3,13 +3,16 @@
 namespace Devim\Component\RpcServer\Smd;
 
 /**
- * Description of SmdGenerator
- *
- * @author eugene
+ * Class SmdGenerator
  */
 class SmdGenerator implements SmdGeneratorInterface
 {
-    public function run(\Generator $serviceAnnotationGenerator) {
+    /**
+     * @param \Generator $serviceAnnotationGenerator
+     * 
+     * @return array
+     */
+    public function run(\Generator $serviceAnnotationGenerator): array {
         $services = [];
         
         foreach ($serviceAnnotationGenerator as $name => $annotation) {
