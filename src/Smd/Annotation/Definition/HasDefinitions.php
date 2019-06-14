@@ -15,7 +15,8 @@ trait HasDefinitions {
     /**
      * @return array
      */
-    private function getSmdDefinitions(): array {
+    private function getSmdDefinitions(): array 
+    {
         $result = [];
         foreach ($this->definitions as $item) {
             $result[$item->name] = $item->getSmdInfo();

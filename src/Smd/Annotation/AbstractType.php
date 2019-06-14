@@ -33,7 +33,8 @@ abstract class AbstractType
      * @return string
      * @throws SmdInvalidClassNameException
      */
-    public function getTypeName(): string {
+    public function getTypeName(): string
+    {
         $rx = '/^(.+)'.static::CLASS_NAME_SUFFIX.'$/';
         $className = (new \ReflectionClass($this))->getShortName();
         
@@ -47,7 +48,8 @@ abstract class AbstractType
     /**
      * @return array
      */
-    public function getSmdInfo(): array {
+    public function getSmdInfo(): array
+    {
         return [
             'type' => $this->getTypeName(),
             'name' => $this->name,
