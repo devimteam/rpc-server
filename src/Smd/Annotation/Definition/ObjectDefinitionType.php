@@ -18,7 +18,6 @@ class ObjectDefinitionType extends AbstractDefinitionType
     public $properties;
 
     /**
-     *
      * @var string
      */
     public $ref;

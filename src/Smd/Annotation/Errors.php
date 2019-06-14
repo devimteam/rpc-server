@@ -8,7 +8,7 @@ use Doctrine\Common\Annotations\Annotation\Required;
  * @Annotation
  * @Target({"ANNOTATION"})
  */
-final class Errors
+class Errors
 {
     /**
      * @Required

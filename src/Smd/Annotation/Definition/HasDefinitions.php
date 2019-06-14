@@ -7,7 +7,6 @@ namespace Devim\Component\RpcServer\Smd\Annotation\Definition;
  */
 trait HasDefinitions {
     /**
-     *
      * @var array<Devim\Component\RpcServer\Smd\Annotation\Definition\AbstractDefinitionType>
      */
     public $definitions = [];

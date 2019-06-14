@@ -18,11 +18,6 @@ class Parameters
     public $items;
 
     /**
-     * @var array
-     */
-    public $definitions = [];
-
-    /**
      * @return array
      */
     public function getSmdInfo(): array

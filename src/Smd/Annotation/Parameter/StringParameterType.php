@@ -8,5 +8,5 @@ namespace Devim\Component\RpcServer\Smd\Annotation\Parameter;
  */
 class StringParameterType extends AbstractParameterType
 {
-    //put your code here
+
 }
