@@ -3,6 +3,7 @@
 namespace Devim\Component\RpcServer\Smd\Annotation\Parameter;
 
 use Devim\Component\RpcServer\Smd\Annotation\Definition\HasDefinitions;
+use Devim\Component\RpcServer\Smd\Exception;
 
 /**
  * @Annotation
@@ -23,7 +24,7 @@ class ArrayParameterType extends AbstractParameterType
     
     /**
      * @return array
-     * @throws \Exception
+     * @throws Exception\SmdInvalidDefinitionRef
      */
     public function getSmdInfo(): array {
         $info = parent::getSmdInfo();
@@ -36,7 +37,7 @@ class ArrayParameterType extends AbstractParameterType
             $info['definitions'] = $this->getSmdDefinitions();
             
             if (!isset($info['definitions'][$this->type])) {
-                throw new \Exception('oops');
+                throw new Exception\SmdInvalidDefinitionRef($this->type);
             }
             
             $info['items'] = [

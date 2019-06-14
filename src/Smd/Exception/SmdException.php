@@ -9,6 +9,7 @@ class SmdException extends \Exception
 {
     const INVALID_CLASS_NAME = 32500;
     const INVALID_DEFINITION = 32510;
+    const INVALID_DEFINITION_REF = 32520;
     
     /**
      * @var mixed

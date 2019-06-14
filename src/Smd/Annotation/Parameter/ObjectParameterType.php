@@ -3,6 +3,7 @@
 namespace Devim\Component\RpcServer\Smd\Annotation\Parameter;
 
 use Devim\Component\RpcServer\Smd\Annotation\Definition\HasDefinitions;
+use Devim\Component\RpcServer\Smd\Exception;
 
 /**
  * @Annotation
@@ -28,6 +29,9 @@ class ObjectParameterType extends AbstractParameterType
         }
         
         if (!empty($this->ref)) {
+            if (!isset($info['definitions'][$this->ref])) {
+                throw new Exception\SmdInvalidDefinitionRef($this->ref);
+            }
             $info['$ref'] = '#/definitions/' . $this->ref;
         }
         
