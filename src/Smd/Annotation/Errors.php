@@ -16,8 +16,8 @@ final class Errors
      * @var array<Devim\Component\RpcServer\Smd\Annotation\Error>
      */
     public $items;
-    
-    public function getSmdInfo()
+
+    public function getSmdInfo(): array
     {
         $result = [];
         foreach ($this->items as $error) {

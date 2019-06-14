@@ -12,13 +12,5 @@ use Devim\Component\RpcServer\Smd\Annotation\AbstractType;
  */
 class AbstractDefinitionType extends AbstractType
 {
-
-    /**
-     * 
-     * @return string
-     */
-    public function getTypeName() {
-        return parent::getTypeName('DefinitionType');
-    }
-    
+    const CLASS_NAME_SUFFIX = 'DefinitionType';   
 }

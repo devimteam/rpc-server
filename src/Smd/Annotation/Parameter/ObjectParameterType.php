@@ -18,7 +18,7 @@ class ObjectParameterType extends AbstractParameterType
      */
     public $ref;
     
-    public function getSmdInfo() {
+    public function getSmdInfo(): array {
         $info = parent::getSmdInfo();
         
         if (!empty($this->definitions)) {

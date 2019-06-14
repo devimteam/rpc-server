@@ -4,6 +4,8 @@ namespace Devim\Component\RpcServer\Smd\Annotation;
 
 use Doctrine\Common\Annotations\Annotation\Required;
 
+use Devim\Component\RpcServer\Smd\Exception;
+
 /**
  * @Annotation
  * @Target({"ANNOTATION"})
@@ -11,6 +13,8 @@ use Doctrine\Common\Annotations\Annotation\Required;
 abstract class AbstractType
 {
 
+    const CLASS_NAME_SUFFIX = '';
+    
     /**
      * @Required
      *
@@ -26,19 +30,24 @@ abstract class AbstractType
     public $description;
 
     /**
-     * 
      * @return string
+     * @throws SmdInvalidClassNameException
      */
-    public function getTypeName($prefix='') {
+    public function getTypeName(): string {
+        $rx = '/^(.+)'.static::CLASS_NAME_SUFFIX.'$/';
         $className = (new \ReflectionClass($this))->getShortName();
-        if (!preg_match('/^(.+)'.$prefix.'$/', $className, $matches)) {
-            throw new \Exception($className);
+        
+        if (!preg_match($rx, $className, $matches)) {
+            throw new Exception\SmdInvalidClassNameException($className, static::CLASS_NAME_SUFFIX);
         }
         
         return lcfirst($matches[1]);
     }
     
-    public function getSmdInfo() {
+    /**
+     * @return array
+     */
+    public function getSmdInfo(): array {
         return [
             'type' => $this->getTypeName(),
             'name' => $this->name,

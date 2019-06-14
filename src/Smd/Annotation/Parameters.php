@@ -18,12 +18,15 @@ class Parameters
     public $items;
 
     /**
-     *
      * @var array
      */
     public $definitions = [];
-    
-    public function getSmdInfo() {
+
+    /**
+     * @return array
+     */
+    public function getSmdInfo(): array
+    {
         $info = [];
         foreach ($this->items as $item) {
             $info[] = $item->getSmdInfo();

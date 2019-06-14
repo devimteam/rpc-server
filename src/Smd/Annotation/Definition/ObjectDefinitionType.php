@@ -23,7 +23,7 @@ class ObjectDefinitionType extends AbstractDefinitionType
      */
     public $ref;
     
-    public function getSmdInfo() {
+    public function getSmdInfo(): array {
         $info = parent::getSmdInfo();
         
         $hasRef = !empty($this->ref);

@@ -11,6 +11,8 @@ use Devim\Component\RpcServer\Smd\Annotation\AbstractType;
 class AbstractParameterType extends AbstractType
 {
 
+    const CLASS_NAME_SUFFIX = 'ParameterType';
+    
     /**
      *
      * @var bool
@@ -22,12 +24,4 @@ class AbstractParameterType extends AbstractType
      * @var mixed
      */
     public $default = null;
-
-   /**
-     * 
-     * @return string
-     */
-    public function getTypeName() {
-        return parent::getTypeName('ParameterType');
-    }
 }

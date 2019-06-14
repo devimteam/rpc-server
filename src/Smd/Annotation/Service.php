@@ -1,4 +1,5 @@
 <?php
+
 namespace Devim\Component\RpcServer\Smd\Annotation;
 
 use Doctrine\Common\Annotations\Annotation\Required;
@@ -9,7 +10,6 @@ use Doctrine\Common\Annotations\Annotation\Required;
  */
 final class Service
 {
-
     /**
      * @Required
      *
@@ -18,7 +18,6 @@ final class Service
     public $description;
 
     /**
-     *
      * @var \Devim\Component\RpcServer\Smd\Annotation\Parameters
      */
     public $parameters;
@@ -37,7 +36,10 @@ final class Service
      */
     public $errors;
 
-    public function getSmdInfo()
+    /**
+     * @return array
+     */
+    public function getSmdInfo(): array
     {
         return [
             'description' => $this->description,
