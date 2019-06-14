@@ -178,6 +178,7 @@ class RpcServer
     }
 
     /**
+     * @param Request $request
      * 
      * @return bool
      */
@@ -340,14 +341,20 @@ class RpcServer
         return $payload['id'] ?? null;
     }
     
+    /**
+     * @return \Generator
+     */
     private function serviceAnnotationGenerator() {
+        // Loop over services
         foreach ($this->services as $name => [$className, $parametersCallback]) {
+            // Get public service methods
             $class = new \ReflectionClass($className);
             $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
 
+            // Loop over methods
             foreach ($methods as $method) {
+                // Check if there is service annotation in method's doc block
                 $annotation = $this->annotationReader->getMethodAnnotation($method, \Devim\Component\RpcServer\Smd\Annotation\Service::class);
-
                 if (!empty($annotation)) {
                     $smdName = $name . '.' . $method->getName();
                     yield $smdName => $annotation;
