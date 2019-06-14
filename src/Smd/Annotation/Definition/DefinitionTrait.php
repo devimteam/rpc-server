@@ -2,14 +2,20 @@
 
 namespace Devim\Component\RpcServer\Smd\Annotation\Definition;
 
-trait DefinitionTrait {
+/**
+ * Trait HasDefinitions
+ */
+trait HasDefinitions {
     /**
      *
      * @var array<Devim\Component\RpcServer\Smd\Annotation\Definition\AbstractDefinitionType>
      */
     public $definitions = [];
     
-    private function getSmdDefinitions() {
+    /**
+     * @return array
+     */
+    private function getSmdDefinitions(): array {
         $result = [];
         foreach ($this->definitions as $item) {
             $result[$item->name] = $item->getSmdInfo();

@@ -2,7 +2,7 @@
 
 namespace Devim\Component\RpcServer\Smd\Annotation\Parameter;
 
-use Devim\Component\RpcServer\Smd\Annotation\Definition\DefinitionTrait;
+use Devim\Component\RpcServer\Smd\Annotation\Definition\HasDefinitions;
 
 /**
  * @Annotation
@@ -10,14 +10,16 @@ use Devim\Component\RpcServer\Smd\Annotation\Definition\DefinitionTrait;
  */
 class ObjectParameterType extends AbstractParameterType
 {
-    use DefinitionTrait;
+    use HasDefinitions;
     
     /**
-     *
      * @var string
      */
     public $ref;
     
+    /**
+     * @return array
+     */
     public function getSmdInfo(): array {
         $info = parent::getSmdInfo();
         

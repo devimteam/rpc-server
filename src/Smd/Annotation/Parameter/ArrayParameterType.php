@@ -2,7 +2,7 @@
 
 namespace Devim\Component\RpcServer\Smd\Annotation\Parameter;
 
-use Devim\Component\RpcServer\Smd\Annotation\Definition\DefinitionTrait;
+use Devim\Component\RpcServer\Smd\Annotation\Definition\HasDefinitions;
 
 /**
  * @Annotation
@@ -10,7 +10,7 @@ use Devim\Component\RpcServer\Smd\Annotation\Definition\DefinitionTrait;
  */
 class ArrayParameterType extends AbstractParameterType
 {
-    use DefinitionTrait;
+    use HasDefinitions;
     
     const STD_TYPES = ['boolean', 'integer', 'number', 'object', 'string'];
     
@@ -21,6 +21,10 @@ class ArrayParameterType extends AbstractParameterType
      */
     public $type;
     
+    /**
+     * @return array
+     * @throws \Exception
+     */
     public function getSmdInfo(): array {
         $info = parent::getSmdInfo();
         

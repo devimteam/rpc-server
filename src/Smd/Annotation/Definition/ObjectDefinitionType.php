@@ -3,6 +3,7 @@
 namespace Devim\Component\RpcServer\Smd\Annotation\Definition;
 
 use Doctrine\Common\Annotations\Annotation\Required;
+use Devim\Component\RpcServer\Smd\Exception;
 
 /**
  * @Annotation
@@ -10,41 +11,48 @@ use Doctrine\Common\Annotations\Annotation\Required;
  */
 class ObjectDefinitionType extends AbstractDefinitionType
 {
-    
+
     /**
-     *
      * @var array<Devim\Component\RpcServer\Smd\Annotation\Definition\AbstractDefinitionType>
      */
     public $properties;
-    
+
     /**
      *
      * @var string
      */
     public $ref;
-    
-    public function getSmdInfo(): array {
+
+    /**
+     * @return array
+     * @throws Exception\SmdInvalidDefinition
+     */
+    public function getSmdInfo(): array
+    {
         $info = parent::getSmdInfo();
-        
+
         $hasRef = !empty($this->ref);
         $hasProperties = !empty($this->properties);
-        
+
         if ($hasRef && $hasProperties) {
-            throw new \Exception('oops 1');
+            throw new Exception\SmdInvalidDefinition('Object definition may have "properties" or "ref" attributes, but not both');
         }
-        
+
         if ($hasRef) {
             $info['$ref'] = '#/definitions/' . $this->ref;
         } else if ($hasProperties) {
             $info['properties'] = $this->getSmdProperties();
         } else {
-            throw new \Exception('oops 2');
+            throw new Exception\SmdInvalidDefinition('Object definition must have either "properties" or "ref" attribute');
         }
-        
+
         return $info;
     }
 
-    private function getSmdProperties()
+    /**
+     * @return array
+     */
+    private function getSmdProperties(): array
     {
         $result = [];
         foreach ($this->properties as $item) {
@@ -52,5 +60,4 @@ class ObjectDefinitionType extends AbstractDefinitionType
         }
         return $result;
     }
-    
 }

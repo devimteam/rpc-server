@@ -20,6 +20,9 @@ class ArrayDefinitionType extends AbstractDefinitionType
      */
     public $type;
     
+    /**
+     * @return array
+     */
     public function getSmdInfo(): array {
         $info = parent::getSmdInfo();
         

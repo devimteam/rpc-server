@@ -8,6 +8,7 @@ namespace Devim\Component\RpcServer\Smd\Exception;
 class SmdException extends \Exception
 {
     const INVALID_CLASS_NAME = 32500;
+    const INVALID_DEFINITION = 32510;
     
     /**
      * @var mixed
