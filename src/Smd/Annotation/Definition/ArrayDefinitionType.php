@@ -2,6 +2,7 @@
 
 namespace Devim\Component\RpcServer\Smd\Annotation\Definition;
 
+use Devim\Component\RpcServer\Smd\Annotation\Service;
 use Doctrine\Common\Annotations\Annotation\Required;
 
 /**
@@ -23,9 +24,9 @@ class ArrayDefinitionType extends AbstractDefinitionType
     /**
      * @return array
      */
-    public function getSmdInfo(): array
+    public function getSmdInfo(Service $service): array
     {
-        $info = parent::getSmdInfo();
+        $info = parent::getSmdInfo($service);
         
         if (in_array($this->type, static::STD_TYPES)) {
             $info['items'] = [
@@ -35,6 +36,7 @@ class ArrayDefinitionType extends AbstractDefinitionType
             $info['items'] = [
                 '$ref' => '#/definitions/' . $this->type,
             ];
+            
         }
         
         return $info;

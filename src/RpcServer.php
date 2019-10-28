@@ -8,10 +8,13 @@ use Devim\Component\RpcServer\Exception\RpcMethodNotFoundException;
 use Devim\Component\RpcServer\Exception\RpcParseException;
 use Devim\Component\RpcServer\Exception\RpcServiceExistsException;
 use Devim\Component\RpcServer\Exception\RpcServiceNotFoundException;
+use Devim\Component\RpcServer\Smd\SmdGenerator;
 use Devim\Component\RpcServer\Smd\SmdGeneratorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Annotations\Reader as AnnotationReaderInterface;
+
+
 
 /**
  * Class RpcServer
@@ -47,13 +50,13 @@ class RpcServer
     
     /**
      * 
-     * @param AnnotationReaderInterface $annotationReader
-     * @param SmdGeneratorInterface $smdGenerator
+     * @param AnnotationReaderInterface|null $annotationReader
+     * @param SmdGeneratorInterface|null $smdGenerator
      */
-    public function __construct(AnnotationReaderInterface $annotationReader, SmdGeneratorInterface $smdGenerator)
+    public function __construct( ?AnnotationReaderInterface $annotationReader = null , ?SmdGeneratorInterface $smdGenerator = null )
     {
-        $this->annotationReader = $annotationReader;
-        $this->smdGenerator = $smdGenerator;
+        $this->annotationReader = $annotationReader ?? new \Doctrine\Common\Annotations\AnnotationReader;
+        $this->smdGenerator     = $smdGenerator ?? new SmdGenerator('/rpc');
     }
     
     /**
@@ -110,6 +113,7 @@ class RpcServer
         $response = [];
 
         if ($this->isSmdRequest($request)) {
+            header("Access-Control-Allow-Origin: localhost");
             $response = $this->smdGenerator->run($this->serviceAnnotationGenerator());
         } else {
             $payload = json_decode($request->getContent(), true);
@@ -354,9 +358,19 @@ class RpcServer
             // Loop over methods
             foreach ($methods as $method) {
                 // Check if there is service annotation in method's doc block
+                
+                /** 
+                 * @var \Devim\Component\RpcServer\Smd\Annotation\Service 
+                 * */
                 $annotation = $this->annotationReader->getMethodAnnotation($method, \Devim\Component\RpcServer\Smd\Annotation\Service::class);
+                
+                
                 if (!empty($annotation)) {
                     $smdName = $name . '.' . $method->getName();
+
+                    $annotation->setDocBlock($method->getDocComment());
+                    $annotation->initDefinitions();
+
                     yield $smdName => $annotation;
                 }
             }

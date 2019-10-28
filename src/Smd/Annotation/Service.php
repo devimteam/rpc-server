@@ -2,6 +2,10 @@
 
 namespace Devim\Component\RpcServer\Smd\Annotation;
 
+use Devim\Component\RpcServer\Smd\Annotation\Definitions\DefinitionsManager;
+use Devim\Component\RpcServer\Smd\Annotation\Errors\ErrorsParser;
+use Devim\Component\RpcServer\Smd\Annotation\Parameters\ParametersParser;
+use Devim\Component\RpcServer\Smd\Annotation\Returns\ReturnParser;
 use Doctrine\Common\Annotations\Annotation\Required;
 
 /**
@@ -10,6 +14,7 @@ use Doctrine\Common\Annotations\Annotation\Required;
  */
 final class Service
 {
+    public $name = "";
     /**
      * @Required
      *
@@ -18,34 +23,75 @@ final class Service
     public $description;
 
     /**
-     * @var \Devim\Component\RpcServer\Smd\Annotation\Parameters
-     */
-    public $parameters;
-
-    /**
-     * @Required
      *
-     * @var \Devim\Component\RpcServer\Smd\Annotation\Parameter\AbstractParameterType
+     * @var string
      */
-    public $returns;
+    public $definitions;
 
     /**
-     * @Required
-     *
-     * @var \Devim\Component\RpcServer\Smd\Annotation\Errors
+     * @var DefinitionsManager
      */
-    public $errors;
+    public $definitionsManager;
+    
+    /**
+     * @var string
+     */
+    private $docBlock;
+    
+    /**
+     * @var ParametersParser
+     */
+    private $parametersParser;
 
     /**
+     * @var ErrorsParser
+     */
+    private $errorsParser;
+
+    /**
+     * @var ReturnParser
+     */
+    private $returnParser;
+
+    public function __construct()
+    {
+        $this->parametersParser = new ParametersParser($this);
+        $this->errorsParser     = new ErrorsParser($this);
+        $this->returnParser     = new ReturnParser($this);
+    }
+
+    public function setDocBlock(string $docBlock)
+    {
+        $this->docBlock = $docBlock;
+    }
+
+    public function initDefinitions()
+    {
+        $definitions = preg_replace('|\s+|', ' ', trim($this->definitions));
+
+        $definitions = str_replace(["\n",'*'], "", $definitions);
+        $definitions = str_replace("'", '"', $definitions);
+
+        $this->definitionsManager = new DefinitionsManager($definitions);
+    }
+    /**
+     * @param string $docBlock
+     * @param string $name
      * @return array
      */
     public function getSmdInfo(): array
     {
-        return [
+        $parameters = $this->parametersParser->parseDocBlock($this->docBlock);
+        $errors = $this->errorsParser->parseDocBlock($this->docBlock);
+        $return = $this->returnParser->parseDocBlock($this->docBlock);
+        
+        $smd_info = [
             'description' => $this->description,
-            'parameters' => $this->parameters->getSmdInfo(),
-            'returns' => $this->returns->getSmdInfo(),
-            'errors' => $this->errors->getSmdInfo(),
+            'parameters' => $parameters->getSmdInfo(),
+            'returns' => $return->getSmdInfo(),
+            'errors' => $errors->getSmdInfo()
         ];
+        
+        return $smd_info;
     }
 }

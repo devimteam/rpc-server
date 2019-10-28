@@ -2,6 +2,7 @@
 
 namespace Devim\Component\RpcServer\Smd\Annotation\Definition;
 
+use Devim\Component\RpcServer\Smd\Annotation\Service;
 use Doctrine\Common\Annotations\Annotation\Required;
 use Devim\Component\RpcServer\Smd\Exception;
 
@@ -26,9 +27,9 @@ class ObjectDefinitionType extends AbstractDefinitionType
      * @return array
      * @throws Exception\SmdInvalidDefinition
      */
-    public function getSmdInfo(): array
+    public function getSmdInfo(Service $service): array
     {
-        $info = parent::getSmdInfo();
+        $info = parent::getSmdInfo($service);
 
         $hasRef = !empty($this->ref);
         $hasProperties = !empty($this->properties);
@@ -39,8 +40,10 @@ class ObjectDefinitionType extends AbstractDefinitionType
 
         if ($hasRef) {
             $info['$ref'] = '#/definitions/' . $this->ref;
+            
         } else if ($hasProperties) {
-            $info['properties'] = $this->getSmdProperties();
+            $info['properties'] = $this->getSmdProperties($service);
+
         } else {
             throw new Exception\SmdInvalidDefinition('Object definition must have either "properties" or "ref" attribute');
         }
@@ -51,11 +54,11 @@ class ObjectDefinitionType extends AbstractDefinitionType
     /**
      * @return array
      */
-    private function getSmdProperties(): array
+    private function getSmdProperties(Service $service): array
     {
         $result = [];
         foreach ($this->properties as $item) {
-            $result[$item->name] = $item->getSmdInfo();
+            $result[$item->name] = $item->getSmdInfo($service);
         }
         return $result;
     }

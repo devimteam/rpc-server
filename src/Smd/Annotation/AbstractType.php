@@ -48,7 +48,7 @@ abstract class AbstractType
     /**
      * @return array
      */
-    public function getSmdInfo(): array
+    public function getSmdInfo(Service $service): array
     {
         return [
             'type' => $this->getTypeName(),
