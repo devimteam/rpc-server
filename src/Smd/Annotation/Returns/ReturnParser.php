@@ -26,8 +26,6 @@ class ReturnParser extends AnnotationParser
 
         $paramDescription = $parsedParams['description'];
 
-        $paramDescription = trim(str_replace($params['brackets'], "", $paramDescription));
-
         $paramIsOptional = strpos($paramType,'|null') !== false;
         $paramType = $parsedParams['ref'] ?? $paramType;
         $paramType = str_replace('|null', "", $paramType);

@@ -10,7 +10,8 @@ class BracketsParser
 
     public function __construct(string $stringToProcess)
     {
-        $this->stringToProcess = $stringToProcess;
+        // var_dump($stringToProcess);
+        $this->stringToProcess = self::encodeInQuotes($stringToProcess);
         $this->parseOptionsFromBrackets();
     }
 
@@ -47,13 +48,14 @@ class BracketsParser
     {
         $resultStrings = [];
         $matchesBrackets = [];
-
+        
         preg_match_all('/\[[^\[\]]+\]/', $this->stringToProcess, $matchesBrackets);
+        
         
         foreach($matchesBrackets[0] as $match){
             $resultString = trim(str_replace(['[', ']'], "", $match));
             $resultString = preg_replace('|\s+|', ' ', $resultString );
-            $resultString = self::encodeInQuotes($resultString);
+            
             $resultString = str_replace(" ", "&", $resultString);
             $resultStrings[] =  $resultString;
         }
@@ -74,6 +76,7 @@ class BracketsParser
         foreach($stringsFromBrackets as $string){
             $options = [];
             parse_str($string, $options);
+            // var_dump($options);
             $this->optionsFromBrackets[] = $options;
             if(isset($options['self'])){
                 $this->optionsFromBracketsByName[$options['self']] = $options;

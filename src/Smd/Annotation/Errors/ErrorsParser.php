@@ -24,9 +24,6 @@ class ErrorsParser extends AnnotationParser
         $paramCode = $parsedParams['code'] ?? "";
 
         $paramDescription = $parsedParams['description'] ?? "";
-
-        $paramDescription = trim(str_replace($params['brackets'], "", $paramDescription));
-
         
         $notRpc = $parsedParams['notRpc'] ?? false;
 

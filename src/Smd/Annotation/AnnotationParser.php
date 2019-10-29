@@ -87,6 +87,7 @@ abstract class AnnotationParser
 
         $bracketsFoundArray = array_filter($bracketsFoundArray , 'is_string', ARRAY_FILTER_USE_KEY);
         $regularFoundParams = array_filter($regularFoundParams , 'is_string', ARRAY_FILTER_USE_KEY);
+        
         $regularFoundParams = array_map(function($var) {
             return $var[0] ?? "";
         }, $regularFoundParams);
